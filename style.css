@@ -1,3 +1,6 @@
+table {
+    border-spacing: 15px;
+}
 .chart {
   display: block;
   margin: auto;
@@ -29,7 +32,6 @@ body {
 }
 
 #chart, #header, #footer {
-  position: absolute;
   top: 0;
 }
 

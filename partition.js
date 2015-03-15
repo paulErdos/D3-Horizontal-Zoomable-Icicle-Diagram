@@ -7,7 +7,7 @@ var vis = d3.select("#body").append("div")
     .attr("class", "chart")
     .style("width", w + "px")
     .style("height", h + "px")
-  .append("svg:svg")
+    .append("svg:svg")
     .attr("width", w)
     .attr("height", h);
 
@@ -15,6 +15,7 @@ var partition = d3.layout.partition()
     .value(function(d) { return d.size; });
 
 d3.json("allen.json", function(root) {
+
   var g = vis.selectAll("g")
       .data(partition.nodes(root))
     .enter().append("svg:g")
