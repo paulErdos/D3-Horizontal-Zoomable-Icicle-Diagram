@@ -65,25 +65,34 @@ d3.json("slices_rep.json", function (filenames) {
         var brain_svg = document.getElementById("brain_svg");
         xml_elem = get_firstchild(xml.documentElement);
         brain_svg.appendChild(xml_elem);
-        get_firstchild(xml_elem).attributes.id.value
-        xml_elem.setAttribute("id","p" + get_firstchild(xml_elem).attributes.id.value);
+
+        var slice_id = "p" + get_firstchild(xml_elem).attributes.id.value
+        xml_elem.setAttribute("id",slice_id);
         xml_elem.setAttribute("visibility", "hidden");
         xml_elem.setAttribute("class", "slice_svg");
         xml_elem.setAttribute("transform", "scale(0.00625)");
 
-        var slice_paths = d3.select(xml_elem)[0];
-
+        //if (slice_id == "p278109162") {
+        //  console.log('found slice!');
+        //  d3.select("#p278109162").selectAll("path")
+        //    .on("click", function() {
+        //      console.log("mouse down");
+        //      click(d3.select("rect[id='" + this.attributes.structure_id.value + "']")
+        //       // this.attributes.structure_id.value
+        //    });
+        //}
       });
     }
+    
 });
-
+var debug;
 
 d3.json("allen.json", function(root) {
 
   var highlightPath = function (struct_id, color) {
     var d3_path = d3.select("path[structure_id=" +"'" + struct_id + "'" + "]" );
+    debug = d3_path[0][0];
     var path_elem = d3_path[0][0];
-
     if (path_elem != null) {
       d3_path.style("fill", function (data) { return color; })
       path_elem.parentElement.parentElement.attributes.visibility.value = "visible";
@@ -98,7 +107,7 @@ d3.json("allen.json", function(root) {
   var g = vis.selectAll("g")
       .data(partition.nodes(root))
     .enter().append("svg:g")
-      .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
+      .attr("transform", function(d) { console.log(d); return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
       .on("click", click);
 
   var kx = w / root.dx,
@@ -117,6 +126,8 @@ d3.json("allen.json", function(root) {
         var was_found = highlightPath(d.id, "red");
       })
       .on("mouseout", function (d) {
+        d3.selectAll(".slice_svg").attr("visibility", "hidden");
+        d3.select("#p278109162").attr("visibility", "visible");
         var was_found = highlightPath(d.id, d.color_hex_triplet);
       });
 
