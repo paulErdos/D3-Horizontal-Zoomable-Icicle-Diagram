@@ -3,9 +3,6 @@ var w = 1120,
     x = d3.scale.linear().range([0, w]),
     y = d3.scale.linear().range([0, h]);
 
-var brain_h = 500,
-    brain_w = 500;
-
 var vis = d3.select("#icicle").append("div")
     .attr("class", "chart")
     .style("width", w + "px")
@@ -54,14 +51,8 @@ var xml_elem;
 
 // Load all of the slices.
 d3.json("slices_rep.json", function (filenames) {
-    d3.select("#brain").append("div")
-        .attr("id", "testing")
-        .style("width", brain_w + "px")
-        .style("height", brain_h + "px")
-        .append("svg:svg")
-        .attr("id", "brain_svg")
-        .attr("width", w)
-        .attr("height", h);
+    d3.select("#brain").append("svg").attr("id", "brain_svg").attr("width", "370")
+        .attr("height", 470)
 
     for (var i = 0; i < filenames.length; i++) {
       d3.xml("svgslices/" + filenames[i], "images/svg+xml", function (xml) {

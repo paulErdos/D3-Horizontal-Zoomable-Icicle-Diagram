@@ -23,17 +23,13 @@ text {
   pointer-events: none;
 }
 
-body {
-  background: url(texture-noise.png);
-  overflow: hidden;
-  margin: 0;
-  font-size: 14px;
-  font-family: "Helvetica Neue", Helvetica;
-}
+
 
 #chart, #header, #footer {
   top: 0;
 }
+
+
 
 #header, #footer {
   z-index: 1;
@@ -110,4 +106,39 @@ a:hover {
   width: 1280px;
   font-size: 12px;
   color: #999;
+}
+
+path {
+  stroke-width: 2;
+  stroke: black;
+}
+
+.hover {
+  stroke-width: 20;
+}
+
+#brain {
+  width: 500;
+  height: 500;
+  border: 2px solid #D5D5D5;
+}
+#icicle {
+  position: relative
+  border: 2px solid #D5D5D5;
+}
+
+.node {
+  fill: #ddd;
+  stroke: #fff;
+}
+
+.label {
+  font: 10px sans-serif;
+  text-anchor: start;
+}
+
+.link {
+  stroke: red;
+  stroke-opacity: .5;
+  fill: none;
 }
