@@ -54,10 +54,7 @@ var xml_elem;
 
 // Load all of the slices.
 d3.json("slices_rep.json", function (filenames) {
-    d3.select("#brain").append("div")
-        .attr("id", "testing")
-        .style("width", brain_w + "px")
-        .style("height", brain_h + "px")
+    d3.select("#brain")
         .append("svg:svg")
         .attr("id", "brain_svg")
         .attr("width", w)
@@ -72,7 +69,7 @@ d3.json("slices_rep.json", function (filenames) {
         xml_elem.setAttribute("id","p" + get_firstchild(xml_elem).attributes.id.value);
         xml_elem.setAttribute("visibility", "hidden");
         xml_elem.setAttribute("class", "slice_svg");
-        xml_elem.setAttribute("transform", "scale(0.004625)");
+        xml_elem.setAttribute("transform", "scale(0.00625)");
 
         var slice_paths = d3.select(xml_elem)[0];
 
