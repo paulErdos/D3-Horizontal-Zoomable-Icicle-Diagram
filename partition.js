@@ -50,6 +50,35 @@ var get_firstchild = function (n) {
   return localfirstchild;
 }
 
+
+var testdata = "This is a  test.";
+
+
+//var getWikiSummary = function(name) {
+//     jQuery.getJSON('http://ucsc-perception.org/welcome/default/getwikisummary.jsonp&callback=?', function(data) {
+//     console.log(data);
+//     d3.select("#tooltip")
+//         .select("#value")
+//         .html(data);
+//    })
+//    .error(function(error) { alert("error"); }) 
+//    .jsonpCallback(function() { console.log('hello world'); });
+//}
+    
+var getWikiSummary = function(name) {
+  $.ajax('http://ucsc-perception.org/welcome/default/getwikisummary.jsonp&callback=?', {
+    crossDomain: true,
+    dataType: 'jsonp',
+    jsonpCallback:  function(data) {
+        console.log('hello world');
+        console.log(data);
+        d3.select("#tooltip")
+          .select("#value")
+          .html(data);
+        }
+  })
+}
+
 var xml_elem;
 
 // Load all of the slices.
@@ -72,18 +101,9 @@ d3.json("slices_rep.json", function (filenames) {
         xml_elem.setAttribute("class", "slice_svg");
         xml_elem.setAttribute("transform", "scale(0.00625)");
 
-        //if (slice_id == "p278109162") {
-        //  console.log('found slice!');
-        //  d3.select("#p278109162").selectAll("path")
-        //    .on("click", function() {
-        //      console.log("mouse down");
-        //      click(d3.select("rect[id='" + this.attributes.structure_id.value + "']")
-        //       // this.attributes.structure_id.value
-        //    });
-        //}
       });
     }
-    
+
 });
 var debug;
 
@@ -107,7 +127,7 @@ d3.json("allen.json", function(root) {
   var g = vis.selectAll("g")
       .data(partition.nodes(root))
     .enter().append("svg:g")
-      .attr("transform", function(d) { console.log(d); return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
+      .attr("transform", function(d) { return "translate(" + x(d.y) + "," + y(d.x) + ")"; })
       .on("click", click);
 
   var kx = w / root.dx,
@@ -119,13 +139,18 @@ d3.json("allen.json", function(root) {
       .attr("class", function(d) { return d.children ? "parent" : "child"; })
       .style("fill", function(d) { return '#' + d.color_hex_triplet; })
       .on("mouseover", function (d) {
-        console.log('hello');
         d3.selectAll(".slice_svg").attr("visibility", "hidden");
-
-        console.log(d.id);
         var was_found = highlightPath(d.id, "red");
+        getWikiSummary(d.name);
+      }).on("mousemove", function(d){
+        d3.select("#tooltip")
+          .classed("hidden", false)
+          .style("left", event.pageX + "px")
+          .style("top", event.pageY + 20 + "px");
       })
       .on("mouseout", function (d) {
+        d3.select("#tooltip").classed("hidden", true);
+
         d3.selectAll(".slice_svg").attr("visibility", "hidden");
         d3.select("#p278109162").attr("visibility", "visible");
         var was_found = highlightPath(d.id, d.color_hex_triplet);
@@ -166,4 +191,11 @@ d3.json("allen.json", function(root) {
   function transform(d) {
     return "translate(8," + d.dx * ky / 2 + ")";
   }
+
+//  d3.select("#tooltip")
+//    .style("left", 200 + "px")
+//    .style("top", 200 + "px")
+//    .select("#value")
+//    .text("Some sort of data.")
+//  d3.select("#tooltip").classed("hidden", false);
 });
