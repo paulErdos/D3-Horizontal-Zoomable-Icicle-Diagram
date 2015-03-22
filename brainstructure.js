@@ -107,7 +107,7 @@ d3.json("slices_rep.json", function (filenames) {
 });
 var debug;
 
-d3.json("allen.json", function(root) {
+d3.json("allenwithwiki.json", function(root) {
 
   var highlightPath = function (struct_id, color) {
     var d3_path = d3.select("path[structure_id=" +"'" + struct_id + "'" + "]" );
