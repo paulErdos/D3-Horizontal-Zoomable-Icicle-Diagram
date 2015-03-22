@@ -110,7 +110,7 @@ import wikipedia
 def BFS(root, depth=0):
 
     try:
-        if depth < 5:
+        if depth < 6:
             root['summary'] = wikipedia.summary(root['name'], sentences=4)
         else:
             root['summary'] = "No data for this region."
