@@ -65,19 +65,19 @@ var testdata = "This is a  test.";
 //    .jsonpCallback(function() { console.log('hello world'); });
 //}
     
-var getWikiSummary = function(name) {
-  $.ajax('http://ucsc-perception.org/welcome/default/getwikisummary.jsonp&callback=?', {
-    crossDomain: true,
-    dataType: 'jsonp',
-    jsonpCallback:  function(data) {
-        console.log('hello world');
-        console.log(data);
-        d3.select("#tooltip")
-          .select("#value")
-          .html(data);
-        }
-  })
-}
+//var getWikiSummary = function(name) {
+//  $.ajax('http://ucsc-perception.org/welcome/default/getwikisummary.jsonp&callback=?', {
+//    crossDomain: true,
+//    dataType: 'jsonp',
+//    jsonpCallback:  function(data) {
+//        console.log('hello world');
+//        console.log(data);
+//        d3.select("#tooltip")
+//          .select("#value")
+//          .html(data);
+//        }
+//  })
+//}
 
 var xml_elem;
 
@@ -141,7 +141,9 @@ d3.json("allen.json", function(root) {
       .on("mouseover", function (d) {
         d3.selectAll(".slice_svg").attr("visibility", "hidden");
         var was_found = highlightPath(d.id, "red");
-        getWikiSummary(d.name);
+        d3.select("#tooltip")
+          .select("#value")
+          .html(d.summary);
       }).on("mousemove", function(d){
         d3.select("#tooltip")
           .classed("hidden", false)
