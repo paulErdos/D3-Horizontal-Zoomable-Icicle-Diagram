@@ -2,6 +2,18 @@ from svg.path import Path, parse_path
 from lxml import etree as ET
 import json
 
+def getpathroute(node):
+
+    #create path list to be interated through in d3.
+    path_route = ["div[id='brain']", "svg[id='brain_svg']"]
+    path_route.append("g[id='p" + node.getparent().getparent()[0].attrib["id"] + "']")
+    path_route.append("g[id='" + node.getparent().attrib["id"] + "']")
+    path_route.append("path[id='" + node.attrib["id"] + "']")
+    return path_route
+
+
+
+
 def addpathid(root, curr):
     if 'path' in curr.tag:
         if int(curr.attrib['structure_id']) == int(root['id']):
@@ -13,24 +25,22 @@ def addpathid(root, curr):
             if 'path_ids' in root:
                 root['path_ids'].append(curr.attrib['id'])
                 root['path_areas'].append(path_area)
+                root['path_routes'].append(getpathroute(curr))
                 root['slice_ids'].append(slice_id)
                 root['ave_area'] = sum([a for a in root['path_areas']]) / len(root['path_ids'])
                 root['volume'] += path_area
             else:
                 root['path_ids'] = [curr.attrib['id']]
+                root['path_routes'] = [getpathroute(curr)]
                 root['path_areas'] = [path_area]
                 root['slice_ids'] = [slice_id]
                 root['ave_area'] = path_area
                 root['volume'] = path_area
 
-            enummerated_areas = max( enumerate(root['path_areas']), key=lambda x: x[1] )
-            index =  enummerated_areas[0]
-            largest = enummerated_areas[1]
-            root['largest_area'] = (index, largest)
+            root['largest_area'] = max( enumerate(root['path_areas']), key=lambda x: x[1] )
 
     for child in curr:
         addpathid(root, child)
-
 
 
 def addpaths(curr, root):
