@@ -154,8 +154,7 @@ d3.json("allencurrent.json", function(root) {
       .on("mouseout", function (d) {
         d3.select("#tooltip").classed("hidden", true);
 
-        d3.selectAll(".slice_svg").attr("visibility", "hidden");
-        d3.select("#p278109162").attr("visibility", "visible");
+        d3.selectAll("#" + d.best_slice).attr("visibility", "hidden");
         var was_found = highlightPath(d.id, d.color_hex_triplet);
       });
 

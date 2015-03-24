@@ -8,7 +8,7 @@ def addpathid(root, curr):
             
             #add/update path id attribute
             path_area = parse_path( curr.attrib["d"] ).area()
-            slice_id = "p" + curr.getparent().attrib["id"]
+            slice_id = "p" + curr.getparent().getparent()[0].attrib["id"]
 
             if 'path_ids' in root:
                 root['path_ids'].append(curr.attrib['id'])
