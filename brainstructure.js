@@ -156,7 +156,11 @@ d3.json("allencurrent.json", function(root) {
       .on("mouseout", function (d) {
         d3.select("#tooltip").classed("hidden", true);
 
+<<<<<<< HEAD
         d3.selectAll(".slice_svg").attr("visibility", "hidden");
+=======
+        d3.selectAll("#" + d.best_slice).attr("visibility", "hidden");
+>>>>>>> 906160c56e9282dd711cc90c2bad4b84fe412c33
         var was_found = highlightPath(d.id, d.color_hex_triplet);
       });
 
