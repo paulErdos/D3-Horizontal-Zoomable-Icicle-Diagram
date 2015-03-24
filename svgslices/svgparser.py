@@ -40,7 +40,7 @@ class PathIterator(object):
         print 'strip_extra_space: {}'.format(self.parseable)
         self.tokens = split(' ', self.parseable)
         self.map = self.produce_map(self.tokens)
-        print self.map
+        print 'map: ', self.map
         self.elements = self.process(self.map)
         print self.elements
 
@@ -119,9 +119,11 @@ def getpaths(root, paths=[]):
     return paths
 
 def getpathbyid(root, Id):
+    if path in child.tag and Id == child.attrib['id']:
+        return path['id']
+    
     for child in root:
-        if path in child.tag and Id == child.attrib['id']
-            return child
+        getpathbyid(child, Id)
     return None
 
 
@@ -129,19 +131,20 @@ def addSateliteData(node, name, data):
    node[name] = data
 
 
-def BFS(root, depth=0):
+def BFS(root, curr, depth=0):
 
     try:
+        curr['path_id'] = getpathbyid(root, curr['id'])
         if depth < 6:
-            root['summary'] = wikipedia.summary(root['name'], sentences=4)
+            curr['summary'] = wikipedia.summary(root['name'], sentences=4)
         else:
-            root['summary'] = "No data for this region."
+            curr['summary'] = "No data for this region."
     except:
-        root['summary'] = "no data for this region"
+        curr['summary'] = "no data for this region"
 
     if 'children' in root:
         for child in root['children']:
-            BFS(child, depth+1
+            BFS(child, depth+1)
 
 
 if __name__ == '__main__':
@@ -162,7 +165,7 @@ if __name__ == '__main__':
     f_paths = open("svg_paths.txt", "w")
 
     root = tree.getroot()
-    allenpaths = getpaths(root)
+    allenpaths = getpaths(root, root)
 
     print allenpaths[0]
 
