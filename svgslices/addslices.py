@@ -23,7 +23,7 @@ def addbestslice(root):
     freqcount(root, freq)
 
     if len(freq) > 0:
-        root['best_slice'] = max( zip(freq.keys(), freq.values()), key=lambda x: x[1] )[0]
+        root['best_slice'] = dict(zip(('id', 'index'), max( zip(freq.keys(), freq.values()), key=lambda x: x[1] ) ))
 
 def addslices(root):
     addbestslice(root)

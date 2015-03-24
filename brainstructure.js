@@ -109,20 +109,20 @@ var debug;
 
 d3.json("allencurrent.json", function(root) {
 
-  var highlightPath = function (struct_id, color) {
-    var d3_path = d3.select("path[structure_id=" +"'" + struct_id + "'" + "]" );
-    debug = d3_path[0][0];
-    var path_elem = d3_path[0][0];
-    if (path_elem != null) {
-      d3_path.style("fill", function (data) { return color; })
-      path_elem.parentElement.parentElement.attributes.visibility.value = "visible";
-      return true;
+  var highlightPath = function (path_route, color) {
+    
+    // Select d3 path route.
+    var d3_path = d3.select("body");
+    for (var i = 0; i < path_route.length; i++) {
+      var r = path_route[i];
+      if (d3_path[0][0] != null)
+        d3_path = d3_path.select(r);
+      else
+        return false;
     }
-    else {
-      return false;
-    }
+    d3_path.style("fill", function (data) { return color; })
+    return true;
   }
-
 
   var g = vis.selectAll("g")
       .data(partition.nodes(root))
@@ -140,10 +140,10 @@ d3.json("allencurrent.json", function(root) {
       .style("fill", function(d) { return '#' + d.color_hex_triplet; })
       .on("mouseover", function (d) {
         console.log("best_slice");
-        console.log(d.best_slice);
-        d3.select("#" + d.best_slice).attr("visibility", "visible");
+        console.log(d.best_slice.id);
+        d3.select("#" + d.best_slice.id).attr("visibility", "visible");
 
-        var was_found = highlightPath(d.id, "red");
+        var was_found = highlightPath(d.path_routes[d.best_slice.index], "red");
         d3.select("#tooltip")
           .select("#value")
           .html(d.summary);
