@@ -37,6 +37,7 @@ def addpathid(root, curr):
                 root['ave_area'] = path_area
                 root['volume'] = path_area
 
+
             root['largest_area'] = max( enumerate(root['path_areas']), key=lambda x: x[1] )
 
     for child in curr:
