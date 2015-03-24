@@ -82,7 +82,7 @@ var testdata = "This is a  test.";
 var xml_elem;
 
 // Load all of the slices.
-d3.json("slices_rep.json", function (filenames) {
+d3.json("extra/slices.json", function (filenames) {
     d3.select("#brain")
         .append("svg:svg")
         .attr("id", "brain_svg")
@@ -139,6 +139,8 @@ d3.json("allencurrent.json", function(root) {
       .attr("class", function(d) { return d.children ? "parent" : "child"; })
       .style("fill", function(d) { return '#' + d.color_hex_triplet; })
       .on("mouseover", function (d) {
+        console.log("best_slice");
+        console.log(d.best_slice);
         d3.select("#" + d.best_slice).attr("visibility", "visible");
 
         var was_found = highlightPath(d.id, "red");
@@ -155,7 +157,6 @@ d3.json("allencurrent.json", function(root) {
         d3.select("#tooltip").classed("hidden", true);
 
         d3.selectAll(".slice_svg").attr("visibility", "hidden");
-        d3.select("#p278109162").attr("visibility", "visible");
         var was_found = highlightPath(d.id, d.color_hex_triplet);
       });
 
