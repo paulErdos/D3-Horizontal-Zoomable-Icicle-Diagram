@@ -107,7 +107,7 @@ d3.json("slices_rep.json", function (filenames) {
 });
 var debug;
 
-d3.json("allenwithwiki.json", function(root) {
+d3.json("allencurrent.json", function(root) {
 
   var highlightPath = function (struct_id, color) {
     var d3_path = d3.select("path[structure_id=" +"'" + struct_id + "'" + "]" );
@@ -139,7 +139,8 @@ d3.json("allenwithwiki.json", function(root) {
       .attr("class", function(d) { return d.children ? "parent" : "child"; })
       .style("fill", function(d) { return '#' + d.color_hex_triplet; })
       .on("mouseover", function (d) {
-        d3.selectAll(".slice_svg").attr("visibility", "hidden");
+        d3.select("#" + d.best_slice).attr("visibility", "visible");
+
         var was_found = highlightPath(d.id, "red");
         d3.select("#tooltip")
           .select("#value")
