@@ -5,9 +5,15 @@ def freqcount(root, freq):
     if 'largest_area' in root:
         if not 'largest_area' in root: raise
 
-        slice_id = root['slice_ids'][root['largest_area'][0]]
+        slicemap = root['slice_ids_enum'] = {}
+        for index, slice_id in enumerate(root['slice_ids']):
+          if slice_id in slicemap:
+              slicemap[slice_id].append(index)
+          else:
+              slicemap[slice_id] = [index]
 
-        root['slice_ids_enum'] = dict(zip(root['slice_ids'], range(len(root['slice_ids']))))
+
+        slice_id = root['slice_ids'][root['largest_area'][0]]
         
         # Instantiate this node's 'vote" for the best slice.
         if slice_id in freq:

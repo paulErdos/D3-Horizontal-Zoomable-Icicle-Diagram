@@ -60,4 +60,4 @@ if __name__ == "__main__":
         root = tree.getroot()
         addpaths(data, root)
 
-    open("allenwithpaths.json", "w").write(json.dumps(data))
+    open("allenwithpaths.json", "w").write(json.dumps(data, indent=4))

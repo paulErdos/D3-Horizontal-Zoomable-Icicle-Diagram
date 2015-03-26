@@ -29,15 +29,77 @@ var addSizes = function(root) {
   }
 }
 
-var structBFS = function(root, myid) {
+var BFSdebug;
+var test = [];
+function structBFS(root, struct_id) {
+  test.push(root.id);
+  console.log('root: ' + root.id);
+  if (struct_id == root.id) {
+    console.log('found match!');
+    var path = [root]
+    while (root.parent != null) {
+      root = root.parent;
+      path.insert(0, root);
+    }
+    BFSdebug = path;
+    return path;
+  }
+  else {
     var children = root.children;
     if (children != null) {
       for (var i = 0; i < children.length; i++) {
-        if (children[i].id== myid) return root;
-        structBFS(children[i], myid);
+        structBFS(children[i], struct_id);
       }
-   }
+    }
+  }
 }
+
+
+
+var highlightPath = function (path_route, color) {
+  // Select d3 path route.
+  var d3_path = d3.select("body");
+  for (var i = 0; i < path_route.length; i++) {
+    var r = path_route[i];
+    if (d3_path[0][0] != null)
+      d3_path = d3_path.selectAll(r);
+    else
+      return null;
+  }
+  d3_path.style("fill", function (data) { return color; });
+}
+
+
+var tempdebug;
+var dslice_id;
+var highlightSubtree = function (root, slice_id, highlight, debug) {
+  debug.push(root);
+  tempdebug = debug;
+  dslice_id = slice_id;
+
+  if (root.slice_ids_enum != null) {
+    var all_slices = root.slice_ids_enum;
+    var slices = all_slices[slice_id];
+    if (slices) {
+      for (var i = 0; i < slices.length; i++) {
+        var tempcolor;
+        if (highlight) {
+          tempcolor = "red";
+        } else {
+          tempcolor = "#" + root.color_hex_triplet;
+        }
+        highlightPath(root.path_routes[slices[i]], tempcolor);
+      }
+    }
+  }
+  var children = root.children;
+  if (children != undefined && children != null) {
+    for (var i = 0; i < children.length; i++) {
+      highlightSubtree(children[i], slice_id, highlight, debug);
+    }
+  }
+}
+
 
 // Helper function for dealing with the weirdness of xml. Find the first
 // child of elem "n" that is of type "element".
@@ -49,9 +111,6 @@ var get_firstchild = function (n) {
   }
   return localfirstchild;
 }
-
-
-var testdata = "This is a  test.";
 
 
 //var getWikiSummary = function(name) {
@@ -105,24 +164,9 @@ d3.json("extra/slices.json", function (filenames) {
     }
 
 });
-var debug;
 
 d3.json("allencurrent.json", function(root) {
-
-  var highlightPath = function (path_route, color) {
-    
-    // Select d3 path route.
-    var d3_path = d3.select("body");
-    for (var i = 0; i < path_route.length; i++) {
-      var r = path_route[i];
-      if (d3_path[0][0] != null)
-        d3_path = d3_path.select(r);
-      else
-        return false;
-    }
-    d3_path.style("fill", function (data) { return color; })
-    return true;
-  }
+  debug = root;
 
   var g = vis.selectAll("g")
       .data(partition.nodes(root))
@@ -133,20 +177,29 @@ d3.json("allencurrent.json", function(root) {
   var kx = w / root.dx,
       ky = h / 1;
 
+  var mouseover = function(d, slice_id) {
+     d3.select("#" + slice_id).attr("visibility", "visible");
+     highlightSubtree(d, slice_id, true, []);
+      d3.select("#tooltip")
+        .select("#value")
+        .html(d.summary);
+  }
+
+  var mouseout = function(d, slice_id) {
+    d3.select("#tooltip").classed("hidden", true);
+    d3.selectAll("#" + slice_id).attr("visibility", "hidden");
+    highlightSubtree(d, slice_id, false, []);
+  }
+
   g.append("svg:rect")
       .attr("width", root.dy * kx)
+      .attr("id", function(d) { return  d.id; })
+      .attr("best_slice", function(d) { if (d.best_slice) return d.best_slice.id; })
       .attr("height", function(d) { return d.dx * ky; })
       .attr("class", function(d) { return d.children ? "parent" : "child"; })
       .style("fill", function(d) { return '#' + d.color_hex_triplet; })
-      .on("mouseover", function (d) {
-        console.log("best_slice");
-        console.log(d.best_slice.id);
-        d3.select("#" + d.best_slice.id).attr("visibility", "visible");
-
-        var was_found = highlightPath(d.path_routes[d.best_slice.index], "red");
-        d3.select("#tooltip")
-          .select("#value")
-          .html(d.summary);
+      .on("mouseover", function (d) { 
+          mouseover(d, d.best_slice.id);
       }).on("mousemove", function(d){
         d3.select("#tooltip")
           .classed("hidden", false)
@@ -154,11 +207,8 @@ d3.json("allencurrent.json", function(root) {
           .style("top", event.pageY + 20 + "px");
       })
       .on("mouseout", function (d) {
-        d3.select("#tooltip").classed("hidden", true);
-
-        d3.selectAll("#" + d.best_slice).attr("visibility", "hidden");
-        var was_found = highlightPath(d.id, d.color_hex_triplet);
-      });
+        mouseout(d, d.best_slice.id);
+      })
 
   g.append("svg:text")
       .attr("transform", transform)
